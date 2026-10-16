@@ -38,7 +38,7 @@
             background-color: var(--primary-dark);
             color: var(--primary-accent);
             text-align: center;
-            padding: 10px 15px;
+            padding: 12px 15px;
             font-size: 20px;
             font-weight: 700;
             letter-spacing: 1px;
@@ -80,7 +80,7 @@
             border-color: var(--primary-dark);
         }
 
-        /* Tabs de categorías (PS1, PS2, Todos) */
+        /* Tabs de categorías (Todos, Play 2, Play 1) */
         .categorias-tabs {
             display: flex;
             gap: 8px;
@@ -93,7 +93,7 @@
             background-color: #eee;
             color: #444;
             border: none;
-            padding: 6px 16px;
+            padding: 6px 18px;
             border-radius: 20px;
             font-size: 14px;
             cursor: pointer;
@@ -478,7 +478,7 @@
 
   <!-- BANNER DELGADO SUPERIOR -->
   <div class="top-banner">
-    🎮 Catálogo de Juegos Digitales
+    Catálogo de juegos para Playstation 2
   </div>
 
   <!-- POPUP DE AYUDA INICIAL -->
@@ -488,7 +488,7 @@
       <h2 class="modal-card-titulo">Guía de Uso Rápido</h2>
       <div class="guia-container">
         <div class="guia-paso"><span class="guia-numero">1</span><p class="guia-texto">Ingresa tu nombre y correo en los campos superiores.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso1.png" class="guia-img"></div>
-        <div class="guia-paso"><span class="guia-numero">2</span><p class="guia-texto">Filtra por consola (PS1, PS2) o usa el buscador de texto.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso2.png" class="guia-img"></div>
+        <div class="guia-paso"><span class="guia-numero">2</span><p class="guia-texto">Filtra por consola (Play 2, Play 1) o usa el buscador.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso2.png" class="guia-img"></div>
         <div class="guia-paso"><span class="guia-numero">3</span><p class="guia-texto">Haz clic en los juegos que quieras (verás el borde y la tilde amarilla).</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso3.png" class="guia-img"></div>
         <div class="guia-paso"><span class="guia-numero">4</span><p class="guia-texto">Usa el botón flotante inferior para revisar tu lista seleccionada.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso4.png" class="guia-img"></div>
         <div class="guia-paso"><span class="guia-numero">5</span><p class="guia-texto">Presiona enviar y ¡listo!</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso6.png" class="guia-img"></div>
@@ -515,11 +515,11 @@
         <input type="email" id="email-usuario" placeholder="Tu correo electrónico" required>
     </div>
     
-    <!-- Filtros de categoría -->
+    <!-- Filtros de categoría actualizados -->
     <div class="categorias-tabs">
         <button class="tab-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
-        <button class="tab-btn" onclick="filtrarCategoria('ps2', this)">PS2</button>
-        <button class="tab-btn" onclick="filtrarCategoria('ps1', this)">PS1 (CD)</button>
+        <button class="tab-btn" onclick="filtrarCategoria('ps2', this)">Play 2</button>
+        <button class="tab-btn" onclick="filtrarCategoria('ps1', this)">Play 1</button>
     </div>
 
     <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
@@ -583,10 +583,10 @@
                             let partes = juego.split(',');
                             let nombre = partes[0]?.trim() || "Desconocido";
                             let codigo = partes[1]?.trim() || "000";
+                            let tipoDisco = partes[2]?.trim() ? partes[2].trim().toUpperCase() : "";
                             
-                            // Detección automática de PS1: Si el nombre contiene la palabra "CD" (insensible a mayúsculas)
-                            let esPs1 = nombre.toLowerCase().includes('cd');
-                            let cat = esPs1 ? 'ps1' : 'ps2';
+                            // Detección exacta: si la tercera columna dice "CD" es Play 1, de lo contrario Play 2
+                            let cat = (tipoDisco === "CD") ? 'ps1' : 'ps2';
 
                             todosLosJuegos.push({ nombre, codigo, categoria: cat });
                         }
