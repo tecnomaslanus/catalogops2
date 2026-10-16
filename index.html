@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Juegos - Catálogo Digital</title>
-    <!-- Librería para descargas locales si se requiere -->
+    <title>Catálogo de Juegos - Tienda</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <!-- Google Fonts: Oswald y Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&display=swap" rel="stylesheet">
@@ -37,7 +36,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* --- HEADER FIJO MODERNO --- */
+        /* --- HEADER FIJO --- */
         .header {
             position: sticky;
             top: 0;
@@ -97,11 +96,7 @@
             transform: translateY(-1px);
         }
 
-        #boton-enviar:active {
-            transform: translateY(0);
-        }
-
-        /* --- CONTENEDOR DE CATÁLOGO --- */
+        /* --- CATÁLOGO --- */
         .catalogo {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -130,7 +125,6 @@
             box-shadow: 0 6px 16px rgba(93, 39, 131, 0.15);
         }
 
-        /* Estado seleccionado */
         .item.selected {
             border-color: var(--primary-accent);
             background-color: #fffef2;
@@ -177,7 +171,6 @@
             justify-content: center;
         }
 
-        /* Overlay "Más Info" */
         .item-overlay {
             position: absolute;
             top: 0;
@@ -209,14 +202,9 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             text-transform: uppercase;
-            transition: transform 0.1s;
         }
 
-        .btn-mas-info:hover {
-            transform: scale(1.05);
-        }
-
-        /* --- BOTÓN FLOTANTE Y PANEL DE SELECCIONADOS --- */
+        /* --- BOTÓN FLOTANTE Y PANEL --- */
         .boton-flotante {
             position: fixed;
             bottom: 25px;
@@ -231,11 +219,6 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             cursor: pointer;
             z-index: 1000;
-            transition: transform 0.2s;
-        }
-
-        .boton-flotante:hover {
-            transform: scale(1.08);
         }
 
         .contador-burbuja {
@@ -251,8 +234,6 @@
             text-align: center;
             line-height: 24px;
             font-weight: bold;
-            font-family: 'Montserrat', sans-serif;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             display: none;
         }
 
@@ -313,7 +294,7 @@
             opacity: 1;
         }
 
-        /* --- MODAL DETALLES (RAWG) --- */
+        /* --- MODAL RAWG --- */
         #modal-info {
             position: fixed;
             inset: 0;
@@ -368,10 +349,6 @@
             margin-bottom: 15px;
         }
 
-        .modal-info-texto strong {
-            color: var(--primary-dark);
-        }
-
         .modal-galeria {
             display: flex;
             gap: 10px;
@@ -389,7 +366,7 @@
             flex-shrink: 0;
         }
 
-        /* --- POPUP INICIAL DE GUÍA --- */
+        /* --- POPUP INICIAL --- */
         #popup-inicial {
             position: fixed;
             inset: 0;
@@ -493,85 +470,60 @@
             display: block;
         }
 
-        /* --- RESPONSIVE MEDIA QUERIES --- */
-        @media (min-width: 576px) {
-            .catalogo {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
+        /* --- MEDIA QUERIES RESPONSIVE --- */
+        @media (min-width: 576px) { .catalogo { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 768px) {
-            .header {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .header-top {
-                width: auto;
-                flex: 2;
-            }
-            #boton-enviar {
-                width: auto;
-                padding: 12px 24px;
-            }
-            .catalogo {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 16px;
-                padding: 20px;
-            }
+            .header { flex-direction: row; align-items: center; justify-content: space-between; }
+            .header-top { width: auto; flex: 2; }
+            #boton-enviar { width: auto; padding: 12px 24px; }
+            .catalogo { grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 20px; }
         }
-
-        @media (min-width: 1200px) {
-            .catalogo {
-                grid-template-columns: repeat(6, 1fr);
-            }
-        }
+        @media (min-width: 1200px) { .catalogo { grid-template-columns: repeat(6, 1fr); } }
     </style>
 </head>
 <body>
 
-  <!-- POPUP DE GUÍA INICIAL -->
+  <!-- POPUP GUÍA -->
   <div id="popup-inicial">
     <div class="popup-contenido">
       <button class="btn-cerrar-popup" onclick="cerrarPopup()">✕</button>
       <div class="popup-titulo">Guía de Uso Rápido</div>
-      
       <div class="guia-container">
         <div class="guia-paso">
           <span class="guia-numero">1</span>
-          <p class="guia-texto">Ingresa tu nombre en el campo superior de la página.</p>
+          <p class="guia-texto">Ingresa tu nombre en el campo superior.</p>
           <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso1.png" alt="Paso 1" class="guia-img">
         </div>
         <div class="guia-paso">
           <span class="guia-numero">2</span>
-          <p class="guia-texto">Usa el buscador para filtrar juegos rápidamente por nombre.</p>
+          <p class="guia-texto">Usa el buscador para filtrar juegos por nombre.</p>
           <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso2.png" alt="Paso 2" class="guia-img">
         </div>
         <div class="guia-paso">
           <span class="guia-numero">3</span>
-          <p class="guia-texto">Haz clic en cualquier juego para seleccionarlo (aparecerá con marco y tilde amarilla).</p>
+          <p class="guia-texto">Haz clic en cualquier juego para seleccionarlo (verás la tilde amarilla).</p>
           <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso3.png" alt="Paso 3" class="guia-img">
         </div>
         <div class="guia-paso">
           <span class="guia-numero">4</span>
-          <p class="guia-texto">El botón flotante inferior derecho te muestra la cantidad de juegos elegidos.</p>
+          <p class="guia-texto">El botón inferior derecho te muestra el total elegido.</p>
           <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso4.png" alt="Paso 4" class="guia-img">
         </div>
         <div class="guia-paso">
           <span class="guia-numero">5</span>
-          <p class="guia-texto">Haz clic en el botón flotante para desplegar tu lista y quitar elementos si lo deseas.</p>
+          <p class="guia-texto">Haz clic en el botón flotante para desplegar tu lista y revisar.</p>
           <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso5.png" alt="Paso 5" class="guia-img">
         </div>
         <div class="guia-paso">
           <span class="guia-numero">6</span>
-          <p class="guia-texto">Presiona "Enviar lista de juegos" para enviar tu selección final.</p>
+          <p class="guia-texto">Presiona "Enviar lista de juegos" para registrar tu pedido.</p>
           <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso6.png" alt="Paso 6" class="guia-img">
         </div>
       </div>
     </div>
   </div>
 
-  <!-- HEADER PRINCIPAL -->
+  <!-- HEADER -->
   <div class="header">
     <div class="header-top">
         <input type="text" id="busqueda" placeholder="🔍 Buscar juego..." onkeyup="filtrarJuegos()">
@@ -580,11 +532,11 @@
     <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
   </div>
 
-  <!-- CATÁLOGO DE JUEGOS -->
+  <!-- CATÁLOGO -->
   <div class="catalogo" id="catalogo"></div>
 
-  <!-- BOTÓN FLOTANTE Y PANEL DE SELECCIONADOS -->
-  <div class="boton-flotante" onclick="toggleSeleccionados()" title="Ver juegos seleccionados">📋
+  <!-- FLOTANTE -->
+  <div class="boton-flotante" onclick="toggleSeleccionados()" title="Ver seleccionados">📋
       <span id="contador-juegos" class="contador-burbuja">0</span>
   </div>
     
@@ -593,7 +545,7 @@
       <ul id="lista-seleccionados"></ul>
   </div>
 
-  <!-- MODAL DE INFORMACIÓN (RAWG API) -->
+  <!-- MODAL RAWG -->
   <div id="modal-info">
       <div class="modal-contenido">
           <button class="btn-cerrar-modal" onclick="cerrarModalInfo()">✕</button>
@@ -606,16 +558,13 @@
       </div>
   </div>
 
-  <!-- SCRIPT DE FUNCIONAMIENTO -->
   <script>
         const RAWG_API_KEY = "7ff6f782cfdd4ce097acb6460ba4fac9";
 
         function cerrarPopup() {
             const popup = document.getElementById('popup-inicial');
             popup.classList.add('oculto');
-            setTimeout(() => {
-                popup.style.display = 'none';
-            }, 300);
+            setTimeout(() => { popup.style.display = 'none'; }, 300);
         }
 
         function toggleSeleccionados() {
@@ -672,18 +621,13 @@
 
                             let touchTimer;
                             item.addEventListener('touchstart', () => {
-                                touchTimer = setTimeout(() => {
-                                    item.classList.toggle('overlay-visible');
-                                }, 400);
+                                touchTimer = setTimeout(() => { item.classList.toggle('overlay-visible'); }, 400);
                             });
-
-                            item.addEventListener('touchend', () => {
-                                clearTimeout(touchTimer);
-                            });
+                            item.addEventListener('touchend', () => { clearTimeout(touchTimer); });
                         }
                     });
                 })
-                .catch(err => console.error("Error al cargar el catálogo list.csv:", err));
+                .catch(err => console.error("Error al cargar list.csv:", err));
         }
 
         const observer = new IntersectionObserver((entries, obs) => {
@@ -710,10 +654,7 @@
           function intentarCargar() {
             if (i >= intentos.length) return;
             img.src = intentos[i];
-            img.onerror = () => {
-              i++;
-              intentarCargar();
-            };
+            img.onerror = () => { i++; intentarCargar(); };
             img.onload = () => img.classList.add('loaded');
           }
           intentarCargar();
@@ -767,7 +708,6 @@
             } catch (err) {
                 console.error("Error consultando RAWG:", err);
                 rating.textContent = "Error de conexión";
-                genero.textContent = "Error de conexión";
             }
         }
 
@@ -837,6 +777,7 @@
                 return;
             }
 
+            // URL del formulario de Google configurada para recibir respuestas (/formResponse)
             let formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSekU_n2_wiQNYFgcI0ixhR5vV4QCB6qYtDjSP0O6AK-0oNwEw/formResponse";
 
             let formData = new URLSearchParams();
@@ -845,13 +786,11 @@
 
             fetch(formUrl, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: formData.toString(),
                 mode: "no-cors"
             })
-            .then(() => alert("¡Datos enviados correctamente!"))
+            .then(() => alert("¡Datos enviados correctamente al formulario!"))
             .catch(error => console.error("Error al enviar el formulario:", error));
         }
 
