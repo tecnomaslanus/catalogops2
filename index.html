@@ -51,23 +51,14 @@
 
         .header-top {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             width: 100%;
         }
 
-        #busqueda {
-            flex: 2;
-            padding: 12px 16px;
-            font-size: 15px;
-            font-family: 'Montserrat', sans-serif;
-            border: none;
-            border-radius: 8px;
-            outline: none;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        #nombre-usuario {
+        .header-top input {
             flex: 1;
+            min-width: 180px;
             padding: 12px 16px;
             font-size: 15px;
             font-family: 'Montserrat', sans-serif;
@@ -89,6 +80,7 @@
             font-weight: 700;
             transition: filter 0.2s, transform 0.1s;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            width: 100%;
         }
 
         #boton-enviar:hover {
@@ -100,7 +92,7 @@
         .catalogo {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 14px;
             padding: 15px;
             max-width: 1400px;
             margin: 0 auto;
@@ -157,51 +149,43 @@
             background-color: #eee;
         }
 
+        .item-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: var(--white);
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
         .item p {
             margin: 0;
-            padding: 12px 10px;
-            font-size: 14px;
+            font-size: 13px;
             text-align: center;
             font-weight: 600;
             color: #333;
-            background: var(--white);
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .item-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(93, 39, 131, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-            z-index: 4;
-        }
-
-        .item:hover .item-overlay,
-        .item.overlay-visible .item-overlay {
-            opacity: 1;
-        }
-
+        /* Botón Más Info reubicado abajo fuera de la imagen */
         .btn-mas-info {
-            background-color: var(--primary-accent);
-            color: #1a1a1a;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            background-color: #f0e6f6;
+            color: var(--primary-dark);
+            border: 1px solid #dcd0e5;
+            padding: 6px 10px;
+            border-radius: 6px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             text-transform: uppercase;
+            text-align: center;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-mas-info:hover {
+            background-color: var(--primary-dark);
+            color: var(--white);
         }
 
         /* --- BOTÓN FLOTANTE Y PANEL --- */
@@ -474,7 +458,7 @@
         @media (min-width: 576px) { .catalogo { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 768px) {
             .header { flex-direction: row; align-items: center; justify-content: space-between; }
-            .header-top { width: auto; flex: 2; }
+            .header-top { flex: 2; }
             #boton-enviar { width: auto; padding: 12px 24px; }
             .catalogo { grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 20px; }
         }
@@ -491,7 +475,7 @@
       <div class="guia-container">
         <div class="guia-paso">
           <span class="guia-numero">1</span>
-          <p class="guia-texto">Ingresa tu nombre en el campo superior.</p>
+          <p class="guia-texto">Ingresa tu nombre y correo en los campos superiores.</p>
           <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso1.png" alt="Paso 1" class="guia-img">
         </div>
         <div class="guia-paso">
@@ -523,11 +507,12 @@
     </div>
   </div>
 
-  <!-- HEADER -->
+  <!-- HEADER CON CAMPO DE MAIL -->
   <div class="header">
     <div class="header-top">
         <input type="text" id="busqueda" placeholder="🔍 Buscar juego..." onkeyup="filtrarJuegos()">
         <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
+        <input type="email" id="email-usuario" placeholder="Tu correo electrónico" required>
     </div>
     <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
   </div>
@@ -592,11 +577,12 @@
                             img.classList.add('lazy-img');
                             observer.observe(img);
 
+                            // Contenedor inferior para título y botón Más Info (fuera de la imagen)
+                            let contentDiv = document.createElement('div');
+                            contentDiv.classList.add('item-content');
+
                             let p = document.createElement('p');
                             p.textContent = nombre;
-
-                            let overlay = document.createElement('div');
-                            overlay.classList.add('item-overlay');
 
                             let btnInfo = document.createElement('button');
                             btnInfo.classList.add('btn-mas-info');
@@ -607,10 +593,11 @@
                                 abrirModalInfo(nombre);
                             };
 
-                            overlay.appendChild(btnInfo);
+                            contentDiv.appendChild(p);
+                            contentDiv.appendChild(btnInfo);
+
                             item.appendChild(img);
-                            item.appendChild(p);
-                            item.appendChild(overlay);
+                            item.appendChild(contentDiv);
 
                             document.getElementById('catalogo').appendChild(item);
 
@@ -618,12 +605,6 @@
                                 item.classList.toggle('selected');
                                 actualizarContador();
                             };
-
-                            let touchTimer;
-                            item.addEventListener('touchstart', () => {
-                                touchTimer = setTimeout(() => { item.classList.toggle('overlay-visible'); }, 400);
-                            });
-                            item.addEventListener('touchend', () => { clearTimeout(touchTimer); });
                         }
                     });
                 })
@@ -772,17 +753,24 @@
 
             let juegosSeleccionados = nombres.join("\n");
             let nombreUsuario = document.getElementById("nombre-usuario").value.trim();
+            let emailUsuario = document.getElementById("email-usuario").value.trim();
+
             if (nombreUsuario === "") {
                 alert("Por favor ingresá tu nombre.");
                 return;
             }
 
-            // URL del formulario de Google configurada para recibir respuestas (/formResponse)
+            if (emailUsuario === "") {
+                alert("Por favor ingresá tu correo electrónico.");
+                return;
+            }
+
             let formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSekU_n2_wiQNYFgcI0ixhR5vV4QCB6qYtDjSP0O6AK-0oNwEw/formResponse";
 
             let formData = new URLSearchParams();
             formData.append("entry.411845643", nombreUsuario);
             formData.append("entry.1321569389", juegosSeleccionados);
+            formData.append("entry.122235278", emailUsuario); // Campo de correo electrónico añadido
 
             fetch(formUrl, {
                 method: "POST",
