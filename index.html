@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Juegos - Tienda</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <!-- Google Fonts: Oswald y Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&display=swap" rel="stylesheet">
     
     <style>
@@ -19,9 +18,7 @@
             --danger: #ff4d4d;
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Montserrat', sans-serif;
@@ -31,22 +28,34 @@
             padding-bottom: 90px;
         }
 
-        h1, h2, h3, .popup-titulo, .btn-mas-info, #boton-enviar, .guia-texto {
+        h1, h2, h3, .popup-titulo, .btn-mas-info, #boton-enviar, .guia-texto, .tab-btn {
             font-family: 'Oswald', sans-serif;
             letter-spacing: 0.5px;
         }
 
-        /* --- HEADER FIJO --- */
+        /* --- TOP BANNER --- */
+        .top-banner {
+            background-color: var(--primary-dark);
+            color: var(--primary-accent);
+            text-align: center;
+            padding: 10px 15px;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        /* --- HEADER FIJO Y FILTROS --- */
         .header {
             position: sticky;
             top: 0;
-            background-color: var(--primary-dark);
-            padding: 15px 20px;
+            background-color: var(--white);
+            padding: 12px 20px;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(93, 39, 131, 0.25);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
         }
 
         .header-top {
@@ -58,35 +67,60 @@
 
         .header-top input {
             flex: 1;
-            min-width: 180px;
-            padding: 12px 16px;
-            font-size: 15px;
+            min-width: 160px;
+            padding: 10px 14px;
+            font-size: 14px;
             font-family: 'Montserrat', sans-serif;
-            border: none;
+            border: 1px solid #ddd;
             border-radius: 8px;
             outline: none;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-top input:focus {
+            border-color: var(--primary-dark);
+        }
+
+        /* Tabs de categorías (PS1, PS2, Todos) */
+        .categorias-tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .tab-btn {
+            background-color: #eee;
+            color: #444;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-dark);
+            color: var(--primary-accent);
         }
 
         #boton-enviar {
             background-color: var(--primary-accent);
             color: #1a1a1a;
             border: none;
-            padding: 14px;
-            font-size: 16px;
+            padding: 12px;
+            font-size: 15px;
             text-transform: uppercase;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 700;
-            transition: filter 0.2s, transform 0.1s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: filter 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             width: 100%;
         }
 
-        #boton-enviar:hover {
-            filter: brightness(1.1);
-            transform: translateY(-1px);
-        }
+        #boton-enviar:hover { filter: brightness(1.05); }
 
         /* --- CATÁLOGO --- */
         .catalogo {
@@ -105,15 +139,15 @@
             border-radius: 12px;
             cursor: pointer;
             overflow: hidden;
-            transition: all 0.25s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.2s ease;
+            box-shadow: c0 2px 8px rgba(0,0,0,0.06);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
         .item:hover {
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(93, 39, 131, 0.15);
         }
 
@@ -129,15 +163,15 @@
             right: 10px;
             background-color: var(--primary-accent);
             color: #1a1a1a;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            font-size: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             z-index: 5;
         }
 
@@ -167,7 +201,6 @@
             color: #333;
         }
 
-        /* Botón Más Info reubicado abajo fuera de la imagen */
         .btn-mas-info {
             background-color: #f0e6f6;
             color: var(--primary-dark);
@@ -188,21 +221,41 @@
             color: var(--white);
         }
 
-        /* --- BOTÓN FLOTANTE Y PANEL --- */
-        .boton-flotante {
+        /* --- BOTONES FLOTANTES (Ayuda y Carrito) --- */
+        .botones-flotantes {
             position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 60px;
-            height: 60px;
-            background-color: var(--primary-accent);
-            border-radius: 50%;
-            font-size: 26px;
-            text-align: center;
-            line-height: 60px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            cursor: pointer;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
             z-index: 1000;
+        }
+
+        .btn-flotante {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 22px;
+            text-align: center;
+            line-height: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s;
+        }
+
+        .btn-flotante:hover { transform: scale(1.08); }
+
+        #btn-ayuda-flotante {
+            background-color: var(--primary-dark);
+            color: var(--primary-accent);
+        }
+
+        #btn-carrito-flotante {
+            background-color: var(--primary-accent);
+            color: #1a1a1a;
+            position: relative;
         }
 
         .contador-burbuja {
@@ -211,19 +264,20 @@
             right: -4px;
             background-color: var(--danger);
             color: white;
-            font-size: 13px;
-            width: 24px;
-            height: 24px;
+            font-size: 12px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             text-align: center;
-            line-height: 24px;
+            line-height: 22px;
             font-weight: bold;
             display: none;
         }
 
+        /* --- PANEL DE SELECCIONADOS --- */
         .seleccionados-container {
             position: fixed;
-            bottom: 95px;
+            bottom: 90px;
             right: 20px;
             width: 90%;
             max-width: 380px;
@@ -231,7 +285,7 @@
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             padding: 16px;
-            max-height: 55vh;
+            max-height: 50vh;
             overflow-y: auto;
             display: none;
             z-index: 999;
@@ -269,159 +323,105 @@
             cursor: pointer;
         }
 
-        .lazy-img {
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .lazy-img.loaded {
-            opacity: 1;
-        }
-
-        /* --- MODAL RAWG --- */
-        #modal-info {
+        /* --- MODALES GENERALES (Ayuda, RAWG y Éxito de Envío) --- */
+        .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.75);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 10000;
             padding: 15px;
+            animation: fadeIn 0.2s ease;
         }
 
-        .modal-contenido {
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-card {
             position: relative;
             background: var(--white);
             width: 100%;
-            max-width: 520px;
+            max-width: 480px;
             max-height: 85vh;
             border-radius: 14px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             padding: 24px;
         }
 
-        .btn-cerrar-modal {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: var(--danger);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 11;
-        }
-
-        .modal-titulo {
-            font-size: 22px;
-            margin: 0 0 12px 0;
+        .modal-card-titulo {
+            font-size: 20px;
             color: var(--primary-dark);
-            padding-right: 30px;
+            margin-top: 0;
+            text-align: center;
         }
 
-        .modal-info-texto {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #555;
+        /* Modal de Éxito Personalizado UX */
+        #modal-exito .modal-card {
+            text-align: center;
+            align-items: center;
+            max-width: 400px;
+        }
+
+        .exito-icono {
+            font-size: 50px;
+            background: #e8f5e9;
+            color: var(--success);
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
             margin-bottom: 15px;
         }
 
+        .btn-cerrar-modal-exito {
+            background-color: var(--primary-dark);
+            color: var(--primary-accent);
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        /* Modal RAWG Galería */
         .modal-galeria {
             display: flex;
             gap: 10px;
             overflow-x: auto;
             padding-bottom: 8px;
             scroll-snap-type: x mandatory;
+            margin-top: 10px;
         }
 
         .modal-galeria img {
             width: 100%;
-            height: 220px;
+            height: 200px;
             object-fit: cover;
             border-radius: 8px;
             scroll-snap-align: start;
             flex-shrink: 0;
         }
 
-        /* --- POPUP INICIAL --- */
-        #popup-inicial {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-            padding: 15px;
-        }
-
-        #popup-inicial.oculto {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .popup-contenido {
-            position: relative;
-            background: var(--white);
-            width: 100%;
-            max-width: 450px;
-            max-height: 85vh;
-            border-radius: 14px;
-            box-shadow: 0 15px 35px rgba(93, 39, 131, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .popup-titulo {
-            background-color: var(--primary-dark);
-            color: var(--primary-accent);
-            padding: 16px;
-            margin: 0;
-            font-size: 20px;
-            text-align: center;
-        }
-
-        .btn-cerrar-popup {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background-color: var(--danger);
-            color: var(--white);
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 15px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-        }
-
+        /* Guía inicial / Ayuda */
         .guia-container {
-            padding: 16px;
             overflow-y: auto;
             flex-grow: 1;
+            padding-right: 4px;
         }
 
         .guia-paso {
             background-color: #faf8fc;
             border: 1px solid #efe6f5;
             border-radius: 8px;
-            margin-bottom: 14px;
-            padding: 12px;
+            margin-bottom: 12px;
+            padding: 10px;
         }
 
         .guia-numero {
@@ -429,20 +429,19 @@
             background-color: var(--primary-dark);
             color: var(--primary-accent);
             font-family: 'Oswald', sans-serif;
-            font-size: 14px;
-            width: 26px;
-            height: 26px;
-            line-height: 26px;
+            font-size: 13px;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
             text-align: center;
             border-radius: 50%;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .guia-texto {
             font-size: 13px;
             color: #444;
-            margin: 0 0 8px 0;
-            line-height: 1.4;
+            margin: 0 0 6px 0;
             font-weight: 600;
         }
 
@@ -451,15 +450,29 @@
             height: auto;
             border-radius: 6px;
             border: 1px solid #ddd;
-            display: block;
         }
 
-        /* --- MEDIA QUERIES RESPONSIVE --- */
+        .btn-cerrar-generico {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .lazy-img { opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .lazy-img.loaded { opacity: 1; }
+
+        /* Media Queries responsivos */
         @media (min-width: 576px) { .catalogo { grid-template-columns: repeat(3, 1fr); } }
         @media (min-width: 768px) {
-            .header { flex-direction: row; align-items: center; justify-content: space-between; }
-            .header-top { flex: 2; }
-            #boton-enviar { width: auto; padding: 12px 24px; }
             .catalogo { grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 20px; }
         }
         @media (min-width: 1200px) { .catalogo { grid-template-columns: repeat(6, 1fr); } }
@@ -467,62 +480,64 @@
 </head>
 <body>
 
-  <!-- POPUP GUÍA -->
-  <div id="popup-inicial">
-    <div class="popup-contenido">
-      <button class="btn-cerrar-popup" onclick="cerrarPopup()">✕</button>
-      <div class="popup-titulo">Guía de Uso Rápido</div>
+  <!-- BANNER DELGADO SUPERIOR -->
+  <div class="top-banner">
+    🎮 Catálogo de Juegos Digitales
+  </div>
+
+  <!-- POPUP / MODAL DE AYUDA INICIAL -->
+  <div id="modal-ayuda" class="modal-overlay" style="display: flex;">
+    <div class="modal-card">
+      <button class="btn-cerrar-generico" onclick="cerrarAyuda()">✕</button>
+      <h2 class="modal-card-titulo">Guía de Uso Rápido</h2>
       <div class="guia-container">
-        <div class="guia-paso">
-          <span class="guia-numero">1</span>
-          <p class="guia-texto">Ingresa tu nombre y correo en los campos superiores.</p>
-          <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso1.png" alt="Paso 1" class="guia-img">
-        </div>
-        <div class="guia-paso">
-          <span class="guia-numero">2</span>
-          <p class="guia-texto">Usa el buscador para filtrar juegos por nombre.</p>
-          <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso2.png" alt="Paso 2" class="guia-img">
-        </div>
-        <div class="guia-paso">
-          <span class="guia-numero">3</span>
-          <p class="guia-texto">Haz clic en cualquier juego para seleccionarlo (verás la tilde amarilla).</p>
-          <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso3.png" alt="Paso 3" class="guia-img">
-        </div>
-        <div class="guia-paso">
-          <span class="guia-numero">4</span>
-          <p class="guia-texto">El botón inferior derecho te muestra el total elegido.</p>
-          <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso4.png" alt="Paso 4" class="guia-img">
-        </div>
-        <div class="guia-paso">
-          <span class="guia-numero">5</span>
-          <p class="guia-texto">Haz clic en el botón flotante para desplegar tu lista y revisar.</p>
-          <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso5.png" alt="Paso 5" class="guia-img">
-        </div>
-        <div class="guia-paso">
-          <span class="guia-numero">6</span>
-          <p class="guia-texto">Presiona "Enviar lista de juegos" para registrar tu pedido.</p>
-          <img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso6.png" alt="Paso 6" class="guia-img">
-        </div>
+        <div class="guia-paso"><span class="guia-numero">1</span><p class="guia-texto">Ingresa tu nombre y correo en los campos superiores.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso1.png" class="guia-img"></div>
+        <div class="guia-paso"><span class="guia-numero">2</span><p class="guia-texto">Filtra por consola (PS1, PS2) o usa el buscador de texto.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso2.png" class="guia-img"></div>
+        <div class="guia-paso"><span class="guia-numero">3</span><p class="guia-texto">Haz clic en los juegos que quieras (verás el borde y la tilde amarilla).</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso3.png" class="guia-img"></div>
+        <div class="guia-paso"><span class="guia-numero">4</span><p class="guia-texto">Usa el botón flotante inferior para revisar tu lista seleccionada.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso4.png" class="guia-img"></div>
+        <div class="guia-paso"><span class="guia-numero">5</span><p class="guia-texto">Presiona enviar y ¡listo!</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso6.png" class="guia-img"></div>
       </div>
+      <button class="btn-cerrar-modal-exito" onclick="cerrarAyuda()" style="margin-top:10px;">¡Entendido, a jugar!</button>
     </div>
   </div>
 
-  <!-- HEADER CON CAMPO DE MAIL -->
+  <!-- MODAL DE ÉXITO AL ENVIAR FORMULARIO -->
+  <div id="modal-exito" class="modal-overlay">
+    <div class="modal-card">
+      <div class="exito-icono">✓</div>
+      <h2 class="modal-card-titulo">¡Recibimos tu formulario!</h2>
+      <p style="font-size: 14px; color: #555; margin: 0 0 10px 0;">Tu listado de juegos ha sido enviado con éxito. Nos pondremos en contacto contigo pronto.</p>
+      <button class="btn-cerrar-modal-exito" onclick="cerrarModalExito()">Aceptar</button>
+    </div>
+  </div>
+
+  <!-- HEADER CON DATOS Y PESTAÑAS DE CATEGORÍA -->
   <div class="header">
     <div class="header-top">
-        <input type="text" id="busqueda" placeholder="🔍 Buscar juego..." onkeyup="filtrarJuegos()">
+        <input type="text" id="busqueda" placeholder="🔍 Buscar juego..." onkeyup="aplicarFiltros()">
         <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
         <input type="email" id="email-usuario" placeholder="Tu correo electrónico" required>
     </div>
+    
+    <!-- Filtros de categoría -->
+    <div class="categorias-tabs">
+        <button class="tab-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
+        <button class="tab-btn" onclick="filtrarCategoria('ps2', this)">PS2</button>
+        <button class="tab-btn" onclick="filtrarCategoria('ps1', this)">PS1</button>
+    </div>
+
     <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
   </div>
 
-  <!-- CATÁLOGO -->
+  <!-- CATÁLOGO (Optimizado con carga por lotes) -->
   <div class="catalogo" id="catalogo"></div>
 
-  <!-- FLOTANTE -->
-  <div class="boton-flotante" onclick="toggleSeleccionados()" title="Ver seleccionados">📋
-      <span id="contador-juegos" class="contador-burbuja">0</span>
+  <!-- BOTONES FLOTANTES (Ayuda y Carrito) -->
+  <div class="botones-flotantes">
+      <button class="btn-flotante" id="btn-ayuda-flotante" onclick="abrirAyuda()" title="Ver ayuda inicial">❓</button>
+      <button class="btn-flotante" id="btn-carrito-flotante" onclick="toggleSeleccionados()" title="Ver seleccionados">
+          📋<span id="contador-juegos" class="contador-burbuja">0</span>
+      </button>
   </div>
     
   <div class="seleccionados-container" id="seleccionados-container">
@@ -531,11 +546,11 @@
   </div>
 
   <!-- MODAL RAWG -->
-  <div id="modal-info">
-      <div class="modal-contenido">
-          <button class="btn-cerrar-modal" onclick="cerrarModalInfo()">✕</button>
-          <h2 class="modal-titulo" id="modal-titulo">Cargando...</h2>
-          <div class="modal-info-texto">
+  <div id="modal-info" class="modal-overlay">
+      <div class="modal-card">
+          <button class="btn-cerrar-generico" onclick="cerrarModalInfo()">✕</button>
+          <h2 class="modal-card-titulo" id="modal-titulo">Cargando...</h2>
+          <div style="font-size: 14px; color: #555; margin-bottom: 10px;">
               <div><strong>Rating:</strong> <span id="modal-rating">-</span></div>
               <div><strong>Género:</strong> <span id="modal-genero">-</span></div>
           </div>
@@ -545,12 +560,16 @@
 
   <script>
         const RAWG_API_KEY = "7ff6f782cfdd4ce097acb6460ba4fac9";
+        
+        let todosLosJuegos = [];
+        let juegosFiltrados = [];
+        let itemsMostrados = 0;
+        const loteTamanio = 24; // Cantidad de juegos que se cargan por lote para acelerar la web
+        let categoriaActual = 'todos';
 
-        function cerrarPopup() {
-            const popup = document.getElementById('popup-inicial');
-            popup.classList.add('oculto');
-            setTimeout(() => { popup.style.display = 'none'; }, 300);
-        }
+        function abrirAyuda() { document.getElementById('modal-ayuda').style.display = 'flex'; }
+        function cerrarAyuda() { document.getElementById('modal-ayuda').style.display = 'none'; }
+        function cerrarModalExito() { document.getElementById('modal-exito').style.display = 'none'; }
 
         function toggleSeleccionados() {
             const contenedor = document.getElementById('seleccionados-container');
@@ -561,56 +580,94 @@
             fetch('list.csv')
                 .then(response => response.text())
                 .then(data => {
-                    let juegos = data.split('\n');
-                    juegos.forEach((juego, index) => {
+                    let lineas = data.split('\n');
+                    todosLosJuegos = [];
+                    lineas.forEach((juego, index) => {
                         if (index > 0 && juego.trim() !== '') {
                             let partes = juego.split(',');
                             let nombre = partes[0]?.trim() || "Desconocido";
                             let codigo = partes[1]?.trim() || "000";
+                            
+                            // Detectar categoría automáticamente según estructura o nombre (puedes ajustar según tu CSV)
+                            let cat = nombre.toLowerCase().includes('ps1') ? 'ps1' : 'ps2';
 
-                            let item = document.createElement('div');
-                            item.classList.add('item');
-                            item.setAttribute('data-nombre', nombre);
-
-                            let img = document.createElement('img');
-                            img.setAttribute('data-codigo', codigo);
-                            img.classList.add('lazy-img');
-                            observer.observe(img);
-
-                            // Contenedor inferior para título y botón Más Info (fuera de la imagen)
-                            let contentDiv = document.createElement('div');
-                            contentDiv.classList.add('item-content');
-
-                            let p = document.createElement('p');
-                            p.textContent = nombre;
-
-                            let btnInfo = document.createElement('button');
-                            btnInfo.classList.add('btn-mas-info');
-                            btnInfo.textContent = "Más Info";
-
-                            btnInfo.onclick = (e) => {
-                                e.stopPropagation();
-                                abrirModalInfo(nombre);
-                            };
-
-                            contentDiv.appendChild(p);
-                            contentDiv.appendChild(btnInfo);
-
-                            item.appendChild(img);
-                            item.appendChild(contentDiv);
-
-                            document.getElementById('catalogo').appendChild(item);
-
-                            item.onclick = () => {
-                                item.classList.toggle('selected');
-                                actualizarContador();
-                            };
+                            todosLosJuegos.push({ nombre, codigo, categoria: cat });
                         }
                     });
+                    aplicarFiltros();
                 })
                 .catch(err => console.error("Error al cargar list.csv:", err));
         }
 
+        function filtrarCategoria(cat, elementoBtn) {
+            categoriaActual = cat;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            elementoBtn.classList.add('active');
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            const termino = document.getElementById('busqueda').value.toLowerCase();
+            
+            juegosFiltrados = todosLosJuegos.filter(j => {
+                const coincideTexto = j.nombre.toLowerCase().includes(termino);
+                const coincideCat = (categoriaActual === 'todos' || j.categoria === categoriaActual);
+                return coincideTexto && coincideCat;
+            });
+
+            document.getElementById('catalogo').innerHTML = '';
+            itemsMostrados = 0;
+            cargarMasJuegos();
+        }
+
+        function cargarMasJuegos() {
+            const catalogoEl = document.getElementById('catalogo');
+            const fin = Math.min(itemsMostrados + loteTamanio, juegosFiltrados.length);
+            
+            for (let i = itemsMostrados; i < fin; i++) {
+                let j = juegosFiltrados[i];
+
+                let item = document.createElement('div');
+                item.classList.add('item');
+                item.setAttribute('data-nombre', j.nombre);
+
+                // Mantener estado seleccionado si ya estaba elegido previamente
+                // (Se comprueba en la lista de seleccionados actual)
+                let img = document.createElement('img');
+                img.setAttribute('data-codigo', j.codigo);
+                img.classList.add('lazy-img');
+                observer.observe(img);
+
+                let contentDiv = document.createElement('div');
+                contentDiv.classList.add('item-content');
+
+                let p = document.createElement('p');
+                p.textContent = j.nombre;
+
+                let btnInfo = document.createElement('button');
+                btnInfo.classList.add('btn-mas-info');
+                btnInfo.textContent = "Más Info";
+                btnInfo.onclick = (e) => {
+                    e.stopPropagation();
+                    abrirModalInfo(j.nombre);
+                };
+
+                contentDiv.appendChild(p);
+                contentDiv.appendChild(btnInfo);
+                item.appendChild(img);
+                item.appendChild(contentDiv);
+
+                item.onclick = () => {
+                    item.classList.toggle('selected');
+                    actualizarContador();
+                };
+
+                catalogoEl.appendChild(item);
+            }
+            itemsMostrados = fin;
+        }
+
+        // Lazy Loading e Infinite Scroll por lotes
         const observer = new IntersectionObserver((entries, obs) => {
           entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -619,6 +676,14 @@
               obs.unobserve(img);
             }
           });
+        });
+
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                if (itemsMostrados < juegosFiltrados.length) {
+                    cargarMasJuegos();
+                }
+            }
         });
 
         function cargarImagen(img) {
@@ -687,14 +752,11 @@
                     galeria.innerHTML = "<p>No se encontraron capturas para este juego.</p>";
                 }
             } catch (err) {
-                console.error("Error consultando RAWG:", err);
-                rating.textContent = "Error de conexión";
+                console.error("Error RAWG:", err);
             }
         }
 
-        function cerrarModalInfo() {
-            document.getElementById('modal-info').style.display = "none";
-        }
+        function cerrarModalInfo() { document.getElementById('modal-info').style.display = 'none'; }
 
         function actualizarContador() {
             actualizarListaSeleccionados();
@@ -711,7 +773,14 @@
         function actualizarListaSeleccionados() {
             let lista = document.getElementById('lista-seleccionados');
             lista.innerHTML = '';
-            document.querySelectorAll('.item.selected').forEach(item => {
+            let seleccionados = document.querySelectorAll('.item.selected');
+            
+            if (seleccionados.length === 0) {
+                lista.innerHTML = '<li style="color: #888; text-align: center; padding: 10px;">Ningún juego seleccionado aún</li>';
+                return;
+            }
+
+            seleccionados.forEach(item => {
                 let nombre = item.getAttribute('data-nombre');
                 let li = document.createElement('li');
 
@@ -733,21 +802,13 @@
                 lista.appendChild(li);
             });
         }
-       
-        function filtrarJuegos() {
-            const termino = document.getElementById('busqueda').value.toLowerCase();
-            document.querySelectorAll('.item').forEach(item => {
-                const nombre = item.getAttribute('data-nombre').toLowerCase();
-                item.style.display = nombre.includes(termino) ? '' : 'none';
-            });
-        }
 
         async function enviarCSV() {
             let seleccionados = document.querySelectorAll('.item.selected');
             let nombres = Array.from(seleccionados).map(item => item.getAttribute('data-nombre'));
 
             if (nombres.length === 0) {
-                alert("Seleccioná al menos un juego.");
+                alert("Seleccioná al menos un juego del catálogo.");
                 return;
             }
 
@@ -755,13 +816,8 @@
             let nombreUsuario = document.getElementById("nombre-usuario").value.trim();
             let emailUsuario = document.getElementById("email-usuario").value.trim();
 
-            if (nombreUsuario === "") {
-                alert("Por favor ingresá tu nombre.");
-                return;
-            }
-
-            if (emailUsuario === "") {
-                alert("Por favor ingresá tu correo electrónico.");
+            if (nombreUsuario === "" || emailUsuario === "") {
+                alert("Por favor ingresá tu nombre y correo electrónico.");
                 return;
             }
 
@@ -770,7 +826,7 @@
             let formData = new URLSearchParams();
             formData.append("entry.411845643", nombreUsuario);
             formData.append("entry.1321569389", juegosSeleccionados);
-            formData.append("entry.122235278", emailUsuario); // Campo de correo electrónico añadido
+            formData.append("entry.122235278", emailUsuario);
 
             fetch(formUrl, {
                 method: "POST",
@@ -778,7 +834,10 @@
                 body: formData.toString(),
                 mode: "no-cors"
             })
-            .then(() => alert("¡Datos enviados correctamente al formulario!"))
+            .then(() => {
+                // Mostrar modal de éxito UX/UI en lugar de alerta simple
+                document.getElementById('modal-exito').style.display = 'flex';
+            })
             .catch(error => console.error("Error al enviar el formulario:", error));
         }
 
