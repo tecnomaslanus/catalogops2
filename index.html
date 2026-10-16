@@ -515,7 +515,7 @@
         <input type="email" id="email-usuario" placeholder="Tu correo electrónico" required>
     </div>
     
-    <!-- Filtros de categoría actualizados -->
+    <!-- Filtros de categoría -->
     <div class="categorias-tabs">
         <button class="tab-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
         <button class="tab-btn" onclick="filtrarCategoria('ps2', this)">Play 2</button>
@@ -562,6 +562,9 @@
         let itemsMostrados = 0;
         const loteTamanio = 24; 
         let categoriaActual = 'todos';
+        
+        // Conjunto global para almacenar los nombres de los juegos seleccionados de forma persistente
+        let juegosSeleccionadosSet = new Set();
 
         function abrirAyuda() { document.getElementById('modal-ayuda').style.display = 'flex'; }
         function cerrarAyuda() { document.getElementById('modal-ayuda').style.display = 'none'; }
@@ -585,7 +588,6 @@
                             let codigo = partes[1]?.trim() || "000";
                             let tipoDisco = partes[2]?.trim() ? partes[2].trim().toUpperCase() : "";
                             
-                            // Detección exacta: si la tercera columna dice "CD" es Play 1, de lo contrario Play 2
                             let cat = (tipoDisco === "CD") ? 'ps1' : 'ps2';
 
                             todosLosJuegos.push({ nombre, codigo, categoria: cat });
@@ -628,6 +630,11 @@
                 item.classList.add('item');
                 item.setAttribute('data-nombre', j.nombre);
 
+                // Verificar si este juego ya estaba seleccionado en la memoria global
+                if (juegosSeleccionadosSet.has(j.nombre)) {
+                    item.classList.add('selected');
+                }
+
                 let img = document.createElement('img');
                 img.setAttribute('data-codigo', j.codigo);
                 img.classList.add('lazy-img');
@@ -652,8 +659,14 @@
                 item.appendChild(img);
                 item.appendChild(contentDiv);
 
+                // Manejo del evento de selección persistente
                 item.onclick = () => {
                     item.classList.toggle('selected');
+                    if (item.classList.contains('selected')) {
+                        juegosSeleccionadosSet.add(j.nombre);
+                    } else {
+                        juegosSeleccionadosSet.delete(j.nombre);
+                    }
                     actualizarContador();
                 };
 
@@ -754,7 +767,7 @@
 
         function actualizarContador() {
             actualizarListaSeleccionados();
-            let cantidad = document.querySelectorAll('.item.selected').length;
+            let cantidad = juegosSeleccionadosSet.size;
             const burbuja = document.getElementById('contador-juegos');
             if (cantidad > 0) {
                 burbuja.textContent = cantidad;
@@ -767,22 +780,25 @@
         function actualizarListaSeleccionados() {
             let lista = document.getElementById('lista-seleccionados');
             lista.innerHTML = '';
-            let seleccionados = document.querySelectorAll('.item.selected');
             
-            if (seleccionados.length === 0) {
+            if (juegosSeleccionadosSet.size === 0) {
                 lista.innerHTML = '<li style="color: #888; text-align: center; padding: 10px;">Ningún juego seleccionado aún</li>';
                 return;
             }
 
-            seleccionados.forEach(item => {
-                let nombre = item.getAttribute('data-nombre');
+            juegosSeleccionadosSet.forEach(nombre => {
                 let li = document.createElement('li');
 
                 let checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
                 checkbox.checked = true;
                 checkbox.onclick = () => {
-                    item.classList.remove('selected');
+                    juegosSeleccionadosSet.delete(nombre);
+                    // Actualizar visualmente si el elemento está visible en pantalla actualmente
+                    let itemDOM = document.querySelector(`.item[data-nombre="${CSS.escape(nombre)}"]`);
+                    if (itemDOM) {
+                        itemDOM.classList.remove('selected');
+                    }
                     actualizarContador();
                 };
 
@@ -798,15 +814,12 @@
         }
 
         async function enviarCSV() {
-            let seleccionados = document.querySelectorAll('.item.selected');
-            let nombres = Array.from(seleccionados).map(item => item.getAttribute('data-nombre'));
-
-            if (nombres.length === 0) {
+            if (juegosSeleccionadosSet.size === 0) {
                 alert("Seleccioná al menos un juego del catálogo.");
                 return;
             }
 
-            let juegosSeleccionados = nombres.join("\n");
+            let juegosSeleccionados = Array.from(juegosSeleccionadosSet).join("\n");
             let nombreUsuario = document.getElementById("nombre-usuario").value.trim();
             let emailUsuario = document.getElementById("email-usuario").value.trim();
 
