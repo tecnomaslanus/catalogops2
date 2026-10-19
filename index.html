@@ -3,851 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Juegos - Tienda</title>
+    <title>Catálogo de Juegos</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&family=Oswald:wght@700&display=swap" rel="stylesheet">
-    
+
     <style>
-        :root {
-            --primary-dark: #5d2783;
-            --primary-accent: #ffcb03;
-            --bg-light: #f4f5f7;
-            --text-color: #2b2b2b;
-            --white: #ffffff;
-            --success: #28a745;
-            --danger: #ff4d4d;
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .catalogo { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-top: 20px; }
+        .item { width: 160px; cursor: pointer; padding: 10px; border: 2px solid #ccc; border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; background: #fff; }
+        
+        /* Contenedor uniforme y completo para las portadas */
+        .item img { 
+            width: 100%; 
+            aspect-ratio: 3 / 4; /* Proporción estándar de carátula unificada */
+            object-fit: contain;  /* Muestra la imagen completa sin recortarla ni estirarla */
+            background-color: #f0f0f0; /* Fondo sutil para espacios vacíos si la portada varía */
+            border-radius: 6px; 
         }
 
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Montserrat', sans-serif;
-            margin: 0;
-            background: var(--bg-light);
-            color: var(--text-color);
-            padding-bottom: 90px;
-        }
-
-        h1, h2, h3, .popup-titulo, .btn-mas-info, #boton-enviar, .guia-texto, .tab-btn {
-            font-family: 'Oswald', sans-serif;
-            letter-spacing: 0.5px;
-        }
-
-        /* --- TOP BANNER --- */
-        .top-banner {
-            background-color: var(--primary-dark);
-            color: var(--primary-accent);
-            text-align: center;
-            padding: 12px 15px;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-        }
-
-        /* --- HEADER FIJO Y FILTROS --- */
-        .header {
-            position: sticky;
-            top: 0;
-            background-color: var(--white);
-            padding: 12px 20px;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .header-top {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .header-top input {
-            flex: 1;
-            min-width: 160px;
-            padding: 10px 14px;
-            font-size: 14px;
-            font-family: 'Montserrat', sans-serif;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .header-top input:focus {
-            border-color: var(--primary-dark);
-        }
-
-        /* Tabs de categorías (Todos, Play 2, Play 1) */
-        .categorias-tabs {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            overflow-x: auto;
-            padding-bottom: 4px;
-        }
-
-        .tab-btn {
-            background-color: #eee;
-            color: #444;
-            border: none;
-            padding: 6px 18px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background-color: var(--primary-dark);
-            color: var(--primary-accent);
-        }
-
-        #boton-enviar {
-            background-color: var(--primary-accent);
-            color: #1a1a1a;
-            border: none;
-            padding: 12px;
-            font-size: 15px;
-            text-transform: uppercase;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: filter 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 100%;
-        }
-
-        #boton-enviar:hover { filter: brightness(1.05); }
-
-        /* --- CATÁLOGO --- */
-        .catalogo {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            padding: 15px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .item {
-            position: relative;
-            background-color: var(--white);
-            border: 3px solid transparent;
-            border-radius: 12px;
-            cursor: pointer;
-            overflow: hidden;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(93, 39, 131, 0.15);
-        }
-
-        .item.selected {
-            border-color: var(--primary-accent);
-            background-color: #fffef2;
-        }
-
-        .item.selected::after {
-            content: '✓';
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--primary-accent);
-            color: #1a1a1a;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 5;
-        }
-
-        .item img.lazy-img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            display: block;
-            background-color: #eee;
-        }
-
-        .item-content {
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: var(--white);
-            flex-grow: 1;
-            justify-content: space-between;
-        }
-
-        .item p {
-            margin: 0;
-            font-size: 13px;
-            text-align: center;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .btn-mas-info {
-            background-color: #f0e6f6;
-            color: var(--primary-dark);
-            border: 1px solid #dcd0e5;
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            text-transform: uppercase;
-            text-align: center;
-            transition: all 0.2s;
-            width: 100%;
-        }
-
-        .btn-mas-info:hover {
-            background-color: var(--primary-dark);
-            color: var(--white);
-        }
-
-        /* --- BOTONES FLOTANTES --- */
-        .botones-flotantes {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 1000;
-        }
-
-        .btn-flotante {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 22px;
-            text-align: center;
-            line-height: 50px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            cursor: pointer;
-            border: none;
-            transition: transform 0.2s;
-        }
-
-        .btn-flotante:hover { transform: scale(1.08); }
-
-        #btn-ayuda-flotante {
-            background-color: var(--primary-dark);
-            color: var(--primary-accent);
-        }
-
-        #btn-carrito-flotante {
-            background-color: var(--primary-accent);
-            color: #1a1a1a;
-            position: relative;
-        }
-
-        .contador-burbuja {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background-color: var(--danger);
-            color: white;
-            font-size: 12px;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 22px;
-            font-weight: bold;
-            display: none;
-        }
-
-        /* --- PANEL DE SELECCIONADOS --- */
-        .seleccionados-container {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 90%;
-            max-width: 380px;
-            background-color: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            padding: 16px;
-            max-height: 50vh;
-            overflow-y: auto;
-            display: none;
-            z-index: 999;
-            border-top: 5px solid var(--primary-dark);
-        }
-
-        .seleccionados-container h3 {
-            margin-top: 0;
-            color: var(--primary-dark);
-            font-size: 18px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 8px;
-        }
-
-        .seleccionados-container ul {
-            text-align: left;
-            padding-left: 0;
-            list-style: none;
-            margin: 0;
-        }
-
-        .seleccionados-container li {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-            font-size: 14px;
-        }
-
-        .seleccionados-container input[type="checkbox"] {
-            accent-color: var(--primary-dark);
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        /* --- MODALES GENERALES --- */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            padding: 15px;
-            animation: fadeIn 0.2s ease;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .modal-card {
-            position: relative;
-            background: var(--white);
-            width: 100%;
-            max-width: 480px;
-            max-height: 85vh;
-            border-radius: 14px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            padding: 24px;
-        }
-
-        .modal-card-titulo {
-            font-size: 20px;
-            color: var(--primary-dark);
-            margin-top: 0;
-            text-align: center;
-        }
-
-        #modal-exito .modal-card {
-            text-align: center;
-            align-items: center;
-            max-width: 400px;
-        }
-
-        .exito-icono {
-            font-size: 50px;
-            background: #e8f5e9;
-            color: var(--success);
-            width: 80px;
-            height: 80px;
-            line-height: 80px;
-            border-radius: 50%;
-            margin-bottom: 15px;
-        }
-
-        .btn-cerrar-modal-exito {
-            background-color: var(--primary-dark);
-            color: var(--primary-accent);
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            width: 100%;
-        }
-
-        .modal-galeria {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            scroll-snap-type: x mandatory;
-            margin-top: 10px;
-        }
-
-        .modal-galeria img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 8px;
-            scroll-snap-align: start;
-            flex-shrink: 0;
-        }
-
-        .guia-container {
-            overflow-y: auto;
-            flex-grow: 1;
-            padding-right: 4px;
-        }
-
-        .guia-paso {
-            background-color: #faf8fc;
-            border: 1px solid #efe6f5;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            padding: 10px;
-        }
-
-        .guia-numero {
-            display: inline-block;
-            background-color: var(--primary-dark);
-            color: var(--primary-accent);
-            font-family: 'Oswald', sans-serif;
-            font-size: 13px;
-            width: 24px;
-            height: 24px;
-            line-height: 24px;
-            text-align: center;
-            border-radius: 50%;
-            margin-bottom: 4px;
-        }
-
-        .guia-texto {
-            font-size: 13px;
-            color: #444;
-            margin: 0 0 6px 0;
-            font-weight: 600;
-        }
-
-        .guia-img {
-            width: 100%;
-            height: auto;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-
-        .btn-cerrar-generico {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: var(--danger);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        .lazy-img { opacity: 0; transition: opacity 0.3s ease-in-out; }
-        .lazy-img.loaded { opacity: 1; }
-
-        @media (min-width: 576px) { .catalogo { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 768px) {
-            .catalogo { grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 20px; }
-        }
-        @media (min-width: 1200px) { .catalogo { grid-template-columns: repeat(6, 1fr); } }
+        .selected { border-color: #007BFF; background-color: #E6F0FF; }
+        input { padding: 8px; width: 200px; margin-top: 10px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin: 10px; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 10px; background-color: #f4f4f4; position: sticky; top: 0; z-index: 1000; }
+        .contador { font-size: 18px; background-color: rgba(255, 255, 255, 0.8); padding: 5px 10px; border-radius: 5px; }
+        .item p { font-size: 13px; margin: 8px 0 0 0; }
     </style>
 </head>
 <body>
 
-  <!-- BANNER DELGADO SUPERIOR -->
-  <div class="top-banner">
-    Catálogo de juegos para Playstation 2
-  </div>
-
-  <!-- POPUP DE AYUDA INICIAL -->
-  <div id="modal-ayuda" class="modal-overlay" style="display: flex;">
-    <div class="modal-card">
-      <button class="btn-cerrar-generico" onclick="cerrarAyuda()">✕</button>
-      <h2 class="modal-card-titulo">Guía de Uso Rápido</h2>
-      <div class="guia-container">
-        <div class="guia-paso"><span class="guia-numero">1</span><p class="guia-texto">Ingresa tu nombre y correo en los campos superiores.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso1.png" class="guia-img"></div>
-        <div class="guia-paso"><span class="guia-numero">2</span><p class="guia-texto">Filtra por consola (Play 2, Play 1) o usa el buscador.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso2.png" class="guia-img"></div>
-        <div class="guia-paso"><span class="guia-numero">3</span><p class="guia-texto">Haz clic en los juegos que quieras (verás el borde y la tilde amarilla).</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso3.png" class="guia-img"></div>
-        <div class="guia-paso"><span class="guia-numero">4</span><p class="guia-texto">Usa el botón flotante inferior para revisar tu lista seleccionada.</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso4.png" class="guia-img"></div>
-        <div class="guia-paso"><span class="guia-numero">5</span><p class="guia-texto">Presiona enviar y ¡listo!</p><img src="https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/paso6.png" class="guia-img"></div>
-      </div>
-      <button class="btn-cerrar-modal-exito" onclick="cerrarAyuda()" style="margin-top:10px;">¡Entendido, a jugar!</button>
-    </div>
-  </div>
-
-  <!-- MODAL DE ÉXITO AL ENVIAR FORMULARIO -->
-  <div id="modal-exito" class="modal-overlay">
-    <div class="modal-card">
-      <div class="exito-icono">✓</div>
-      <h2 class="modal-card-titulo">¡Recibimos tu formulario!</h2>
-      <p style="font-size: 14px; color: #555; margin: 0 0 10px 0;">Tu listado de juegos ha sido enviado con éxito. Nos pondremos en contacto contigo pronto.</p>
-      <button class="btn-cerrar-modal-exito" onclick="cerrarModalExito()">Aceptar</button>
-    </div>
-  </div>
-
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-top">
-        <input type="text" id="busqueda" placeholder="🔍 Buscar juego..." onkeyup="aplicarFiltros()">
-        <input type="text" id="nombre-usuario" placeholder="Tu nombre" required>
-        <input type="email" id="email-usuario" placeholder="Tu correo electrónico" required>
-    </div>
+    <h2>Catálogo de Juegos</h2>
     
-    <!-- Filtros de categoría -->
-    <div class="categorias-tabs">
-        <button class="tab-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
-        <button class="tab-btn" onclick="filtrarCategoria('ps2', this)">Play 2</button>
-        <button class="tab-btn" onclick="filtrarCategoria('ps1', this)">Play 1</button>
+    <input type="text" id="busqueda" placeholder="Buscar juego..." onkeyup="filtrarJuegos()">
+
+    <div class="header">
+        <div>
+            <button onclick="guardarCSV()">Guardar</button>
+            <button type="button" onclick="generarCSV()">Enviar por correo</button>
+        </div>
+        <div class="contador">
+            Juegos seleccionados: <span id="contador">0</span>
+        </div>
     </div>
 
-    <button id="boton-enviar" onclick="enviarCSV()">Enviar lista de juegos</button>
-  </div>
+    <div class="catalogo" id="catalogo">
+        <!-- Los juegos se cargarán aquí dinámicamente -->
+    </div>
 
-  <!-- CATÁLOGO -->
-  <div class="catalogo" id="catalogo"></div>
+    <!-- Formulario oculto para enviar el archivo con FormSubmit -->
+    <form id="emailForm" action="https://formsubmit.co/juliodiablo1986@gmail.com" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="_subject" value="Juegos Seleccionados">
+        <input type="file" id="csvFile" name="attachment" hidden>
+    </form>
 
-  <!-- BOTONES FLOTANTES -->
-  <div class="botones-flotantes">
-      <button class="btn-flotante" id="btn-ayuda-flotante" onclick="abrirAyuda()" title="Ver ayuda inicial">❓</button>
-      <button class="btn-flotante" id="btn-carrito-flotante" onclick="toggleSeleccionados()" title="Ver seleccionados">
-          📋<span id="contador-juegos" class="contador-burbuja">0</span>
-      </button>
-  </div>
-    
-  <div class="seleccionados-container" id="seleccionados-container">
-      <h3>Juegos Seleccionados</h3>
-      <ul id="lista-seleccionados"></ul>
-  </div>
-
-  <!-- MODAL RAWG -->
-  <div id="modal-info" class="modal-overlay">
-      <div class="modal-card">
-          <button class="btn-cerrar-generico" onclick="cerrarModalInfo()">✕</button>
-          <h2 class="modal-card-titulo" id="modal-titulo">Cargando...</h2>
-          <div style="font-size: 14px; color: #555; margin-bottom: 10px;">
-              <div><strong>Rating:</strong> <span id="modal-rating">-</span></div>
-              <div><strong>Género:</strong> <span id="modal-genero">-</span></div>
-          </div>
-          <div class="modal-galeria" id="modal-galeria"></div>
-      </div>
-  </div>
-
-  <script>
-        const RAWG_API_KEY = "7ff6f782cfdd4ce097acb6460ba4fac9";
-        
-        let todosLosJuegos = [];
-        let juegosFiltrados = [];
-        let itemsMostrados = 0;
-        const loteTamanio = 24; 
-        let categoriaActual = 'todos';
-        
-        // Conjunto global para almacenar los nombres de los juegos seleccionados de forma persistente
-        let juegosSeleccionadosSet = new Set();
-
-        function abrirAyuda() { document.getElementById('modal-ayuda').style.display = 'flex'; }
-        function cerrarAyuda() { document.getElementById('modal-ayuda').style.display = 'none'; }
-        function cerrarModalExito() { document.getElementById('modal-exito').style.display = 'none'; }
-
-        function toggleSeleccionados() {
-            const contenedor = document.getElementById('seleccionados-container');
-            contenedor.style.display = contenedor.style.display === 'none' ? 'block' : 'none';
-        }
-
+    <script>
         function cargarCatalogo() {
             fetch('list.csv')
                 .then(response => response.text())
                 .then(data => {
-                    let lineas = data.split('\n');
-                    todosLosJuegos = [];
-                    lineas.forEach((juego, index) => {
+                    let juegos = data.split('\n');
+                    juegos.forEach((juego, index) => {
                         if (index > 0 && juego.trim() !== '') {
                             let partes = juego.split(',');
-                            let nombre = partes[0]?.trim() || "Desconocido";
-                            let codigo = partes[1]?.trim() || "000";
-                            let tipoDisco = partes[2]?.trim() ? partes[2].trim().toUpperCase() : "";
-                            
-                            let cat = (tipoDisco === "CD") ? 'ps1' : 'ps2';
+                            let nombre = partes[0].trim();
+                            let codigo = partes[1].trim();
+                            let imagen = `${codigo}_COV`;
 
-                            todosLosJuegos.push({ nombre, codigo, categoria: cat });
+                            let item = document.createElement('div');
+                            item.classList.add('item');
+                            item.setAttribute('data-nombre', nombre);
+
+                            let img = document.createElement('img');
+                            img.src = `ART/${imagen}.jpg`;
+                            img.onerror = () => { img.src = `ART/${imagen}.png`; };
+
+                            let p = document.createElement('p');
+                            p.textContent = nombre;
+
+                            item.appendChild(img);
+                            item.appendChild(p);
+                            document.getElementById('catalogo').appendChild(item);
                         }
                     });
-                    aplicarFiltros();
-                })
-                .catch(err => console.error("Error al cargar list.csv:", err));
-        }
 
-        function filtrarCategoria(cat, elementoBtn) {
-            categoriaActual = cat;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            elementoBtn.classList.add('active');
-            aplicarFiltros();
-        }
-
-        function aplicarFiltros() {
-            const termino = document.getElementById('busqueda').value.toLowerCase();
-            
-            juegosFiltrados = todosLosJuegos.filter(j => {
-                const coincideTexto = j.nombre.toLowerCase().includes(termino);
-                const coincideCat = (categoriaActual === 'todos' || j.categoria === categoriaActual);
-                return coincideTexto && coincideCat;
-            });
-
-            document.getElementById('catalogo').innerHTML = '';
-            itemsMostrados = 0;
-            cargarMasJuegos();
-        }
-
-        function cargarMasJuegos() {
-            const catalogoEl = document.getElementById('catalogo');
-            const fin = Math.min(itemsMostrados + loteTamanio, juegosFiltrados.length);
-            
-            for (let i = itemsMostrados; i < fin; i++) {
-                let j = juegosFiltrados[i];
-
-                let item = document.createElement('div');
-                item.classList.add('item');
-                item.setAttribute('data-nombre', j.nombre);
-
-                // Verificar si este juego ya estaba seleccionado en la memoria global
-                if (juegosSeleccionadosSet.has(j.nombre)) {
-                    item.classList.add('selected');
-                }
-
-                let img = document.createElement('img');
-                img.setAttribute('data-codigo', j.codigo);
-                img.classList.add('lazy-img');
-                observer.observe(img);
-
-                let contentDiv = document.createElement('div');
-                contentDiv.classList.add('item-content');
-
-                let p = document.createElement('p');
-                p.textContent = j.nombre;
-
-                let btnInfo = document.createElement('button');
-                btnInfo.classList.add('btn-mas-info');
-                btnInfo.textContent = "Más Info";
-                btnInfo.onclick = (e) => {
-                    e.stopPropagation();
-                    abrirModalInfo(j.nombre);
-                };
-
-                contentDiv.appendChild(p);
-                contentDiv.appendChild(btnInfo);
-                item.appendChild(img);
-                item.appendChild(contentDiv);
-
-                // Manejo del evento de selección persistente
-                item.onclick = () => {
-                    item.classList.toggle('selected');
-                    if (item.classList.contains('selected')) {
-                        juegosSeleccionadosSet.add(j.nombre);
-                    } else {
-                        juegosSeleccionadosSet.delete(j.nombre);
-                    }
-                    actualizarContador();
-                };
-
-                catalogoEl.appendChild(item);
-            }
-            itemsMostrados = fin;
-        }
-
-        const observer = new IntersectionObserver((entries, obs) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              cargarImagen(img);
-              obs.unobserve(img);
-            }
-          });
-        });
-
-        window.addEventListener('scroll', () => {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-                if (itemsMostrados < juegosFiltrados.length) {
-                    cargarMasJuegos();
-                }
-            }
-        });
-
-        function cargarImagen(img) {
-          const codigo = img.getAttribute('data-codigo');
-          let intentos = [
-            `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.jpg`,
-            `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.jpg`,
-            `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img/${codigo}_COV.png`,
-            `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/${codigo}_COV.png`,
-            `https://raw.githubusercontent.com/tecnomaslanus/ps2/main/img2/default.jpg`
-          ];
-
-          let i = 0;
-          function intentarCargar() {
-            if (i >= intentos.length) return;
-            img.src = intentos[i];
-            img.onerror = () => { i++; intentarCargar(); };
-            img.onload = () => img.classList.add('loaded');
-          }
-          intentarCargar();
-        }
-
-        async function abrirModalInfo(nombreJuego) {
-            const modal = document.getElementById('modal-info');
-            const titulo = document.getElementById('modal-titulo');
-            const rating = document.getElementById('modal-rating');
-            const genero = document.getElementById('modal-genero');
-            const galeria = document.getElementById('modal-galeria');
-
-            titulo.textContent = nombreJuego;
-            rating.textContent = "Cargando...";
-            genero.textContent = "Cargando...";
-            galeria.innerHTML = "";
-            modal.style.display = "flex";
-
-            try {
-                const urlBusqueda = `https://api.rawg.io/api/games?key=${RAWG_API_KEY}&search=${encodeURIComponent(nombreJuego)}&page_size=1`;
-                const resp = await fetch(urlBusqueda);
-                const data = await resp.json();
-
-                if (data.results && data.results.length > 0) {
-                    const juego = data.results[0];
-                    rating.textContent = juego.rating ? `${juego.rating} / 5` : 'N/A';
-                    genero.textContent = juego.genres ? juego.genres.map(g => g.name).join(', ') : 'N/A';
-
-                    const urlScreenshots = `https://api.rawg.io/api/games/${juego.id}/screenshots?key=${RAWG_API_KEY}`;
-                    const respScreenshots = await fetch(urlScreenshots);
-                    const dataScreenshots = await respScreenshots.json();
-
-                    if (dataScreenshots.results && dataScreenshots.results.length > 0) {
-                        dataScreenshots.results.forEach(imgData => {
-                            const img = document.createElement('img');
-                            img.src = imgData.image;
-                            galeria.appendChild(img);
+                    document.querySelectorAll('.item').forEach(item => {
+                        item.addEventListener('click', () => {
+                            item.classList.toggle('selected');
+                            actualizarContador();
                         });
-                    } else if (juego.background_image) {
-                        const img = document.createElement('img');
-                        img.src = juego.background_image;
-                        galeria.appendChild(img);
-                    } else {
-                        galeria.innerHTML = "<p>No hay imágenes disponibles.</p>";
-                    }
-                } else {
-                    rating.textContent = "No encontrado";
-                    genero.textContent = "No encontrado";
-                    galeria.innerHTML = "<p>No se encontraron capturas para este juego.</p>";
-                }
-            } catch (err) {
-                console.error("Error RAWG:", err);
-            }
+                    });
+                })
+                .catch(error => console.error('Error al cargar el CSV:', error));
         }
 
-        function cerrarModalInfo() { document.getElementById('modal-info').style.display = 'none'; }
+        function guardarCSV() {
+            let seleccionados = document.querySelectorAll('.item.selected');
+            let nombres = Array.from(seleccionados).map(item => item.getAttribute('data-nombre'));
+            
+            if (nombres.length === 0) {
+                alert("Seleccioná al menos un juego.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8," + nombres.join("\n");
+            let blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            saveAs(blob, "juegos_seleccionados.csv");
+        }
+
+        function generarCSV() {
+            let seleccionados = document.querySelectorAll('.item.selected');
+            let nombres = Array.from(seleccionados).map(item => item.getAttribute('data-nombre'));
+
+            if (nombres.length === 0) {
+                alert("Seleccioná al menos un juego.");
+                return;
+            }
+
+            let csvContent = nombres.join("\n");
+            let blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+            let file = new File([blob], "list.csv", { type: "text/csv" });
+            let fileInput = document.getElementById("csvFile");
+            let dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            document.getElementById("emailForm").submit();
+        }
+
+        function filtrarJuegos() {
+            let input = document.getElementById("busqueda").value.toLowerCase();
+            let items = document.querySelectorAll(".item");
+
+            items.forEach(item => {
+                let nombre = item.getAttribute("data-nombre").toLowerCase();
+                item.style.display = nombre.includes(input) ? "flex" : "none";
+            });
+        }
 
         function actualizarContador() {
-            actualizarListaSeleccionados();
-            let cantidad = juegosSeleccionadosSet.size;
-            const burbuja = document.getElementById('contador-juegos');
-            if (cantidad > 0) {
-                burbuja.textContent = cantidad;
-                burbuja.style.display = 'block';
-            } else {
-                burbuja.style.display = 'none';
-            }
-        }
-
-        function actualizarListaSeleccionados() {
-            let lista = document.getElementById('lista-seleccionados');
-            lista.innerHTML = '';
-            
-            if (juegosSeleccionadosSet.size === 0) {
-                lista.innerHTML = '<li style="color: #888; text-align: center; padding: 10px;">Ningún juego seleccionado aún</li>';
-                return;
-            }
-
-            juegosSeleccionadosSet.forEach(nombre => {
-                let li = document.createElement('li');
-
-                let checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = true;
-                checkbox.onclick = () => {
-                    juegosSeleccionadosSet.delete(nombre);
-                    // Actualizar visualmente si el elemento está visible en pantalla actualmente
-                    let itemDOM = document.querySelector(`.item[data-nombre="${CSS.escape(nombre)}"]`);
-                    if (itemDOM) {
-                        itemDOM.classList.remove('selected');
-                    }
-                    actualizarContador();
-                };
-
-                let span = document.createElement('span');
-                span.textContent = ' ' + nombre;
-                span.style.flexGrow = '1';
-                span.style.marginLeft = '8px';
-
-                li.appendChild(checkbox);
-                li.appendChild(span);
-                lista.appendChild(li);
-            });
-        }
-
-        async function enviarCSV() {
-            if (juegosSeleccionadosSet.size === 0) {
-                alert("Seleccioná al menos un juego del catálogo.");
-                return;
-            }
-
-            let juegosSeleccionados = Array.from(juegosSeleccionadosSet).join("\n");
-            let nombreUsuario = document.getElementById("nombre-usuario").value.trim();
-            let emailUsuario = document.getElementById("email-usuario").value.trim();
-
-            if (nombreUsuario === "" || emailUsuario === "") {
-                alert("Por favor ingresá tu nombre y correo electrónico.");
-                return;
-            }
-
-            let formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSekU_n2_wiQNYFgcI0ixhR5vV4QCB6qYtDjSP0O6AK-0oNwEw/formResponse";
-
-            let formData = new URLSearchParams();
-            formData.append("entry.411845643", nombreUsuario);
-            formData.append("entry.1321569389", juegosSeleccionados);
-            formData.append("entry.122235278", emailUsuario);
-
-            fetch(formUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: formData.toString(),
-                mode: "no-cors"
-            })
-            .then(() => {
-                document.getElementById('modal-exito').style.display = 'flex';
-            })
-            .catch(error => console.error("Error al enviar el formulario:", error));
+            let seleccionados = document.querySelectorAll('.item.selected');
+            document.getElementById('contador').textContent = seleccionados.length;
         }
 
         window.onload = cargarCatalogo;
     </script>
+
 </body>
 </html>
