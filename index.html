@@ -175,13 +175,13 @@
             z-index: 5;
         }
 
-        /* MODIFICACIÓN DE IMÁGENES: Contenedor uniforme y completo */
+        /* Contenedor de carátula unificado y completo */
         .item img.lazy-img {
             width: 100%;
-            aspect-ratio: 3 / 4; /* Proporción estándar de carátula unificada */
-            object-fit: contain;  /* Muestra la imagen completa sin recortarla */
+            aspect-ratio: 3 / 4;
+            object-fit: contain;
             display: block;
-            background-color: #f8f8f8; /* Fondo sutil para rellenar espacios si varían */
+            background-color: #f8f8f8;
             padding: 4px;
         }
 
@@ -252,6 +252,13 @@
         #btn-ayuda-flotante {
             background-color: var(--primary-dark);
             color: var(--primary-accent);
+        }
+
+        #btn-descargar-flotante {
+            background-color: var(--white);
+            color: var(--primary-dark);
+            border: 2px solid var(--primary-dark);
+            display: none; /* Se muestra solo cuando hay juegos seleccionados */
         }
 
         #btn-carrito-flotante {
@@ -533,6 +540,7 @@
   <!-- BOTONES FLOTANTES -->
   <div class="botones-flotantes">
       <button class="btn-flotante" id="btn-ayuda-flotante" onclick="abrirAyuda()" title="Ver ayuda inicial">❓</button>
+      <button class="btn-flotante" id="btn-descargar-flotante" onclick="descargarTxt()" title="Descargar lista en TXT">📥</button>
       <button class="btn-flotante" id="btn-carrito-flotante" onclick="toggleSeleccionados()" title="Ver seleccionados">
           📋<span id="contador-juegos" class="contador-burbuja">0</span>
       </button>
@@ -565,7 +573,6 @@
         const loteTamanio = 24; 
         let categoriaActual = 'todos';
         
-        // Conjunto global para almacenar los nombres de los juegos seleccionados de forma persistente
         let juegosSeleccionadosSet = new Set();
 
         function abrirAyuda() { document.getElementById('modal-ayuda').style.display = 'flex'; }
@@ -632,7 +639,6 @@
                 item.classList.add('item');
                 item.setAttribute('data-nombre', j.nombre);
 
-                // Verificar si este juego ya estaba seleccionado en la memoria global
                 if (juegosSeleccionadosSet.has(j.nombre)) {
                     item.classList.add('selected');
                 }
@@ -661,7 +667,6 @@
                 item.appendChild(img);
                 item.appendChild(contentDiv);
 
-                // Manejo del evento de selección persistente
                 item.onclick = () => {
                     item.classList.toggle('selected');
                     if (item.classList.contains('selected')) {
@@ -771,11 +776,15 @@
             actualizarListaSeleccionados();
             let cantidad = juegosSeleccionadosSet.size;
             const burbuja = document.getElementById('contador-juegos');
+            const btnDescargar = document.getElementById('btn-descargar-flotante');
+
             if (cantidad > 0) {
                 burbuja.textContent = cantidad;
                 burbuja.style.display = 'block';
+                btnDescargar.style.display = 'block'; // Mostrar botón de descarga al tener selecciones
             } else {
                 burbuja.style.display = 'none';
+                btnDescargar.style.display = 'none'; // Ocultar si no hay selecciones
             }
         }
 
@@ -796,7 +805,6 @@
                 checkbox.checked = true;
                 checkbox.onclick = () => {
                     juegosSeleccionadosSet.delete(nombre);
-                    // Actualizar visualmente si el elemento está visible en pantalla actualmente
                     let itemDOM = document.querySelector(`.item[data-nombre="${CSS.escape(nombre)}"]`);
                     if (itemDOM) {
                         itemDOM.classList.remove('selected');
@@ -813,6 +821,21 @@
                 li.appendChild(span);
                 lista.appendChild(li);
             });
+        }
+
+        // Función para descargar los juegos seleccionados en formato TXT usando FileSaver.js
+        function descargarTxt() {
+            if (juegosSeleccionadosSet.size === 0) {
+                alert("No hay juegos seleccionados para descargar.");
+                return;
+            }
+            let nombreUsuario = document.getElementById("nombre-usuario").value.trim() || "Cliente";
+            let contenido = `LISTA DE JUEGOS SELECCIONADOS - ${nombreUsuario}\n`;
+            contenido += "========================================\n\n";
+            contenido += Array.from(juegosSeleccionadosSet).join("\n");
+
+            let blob = new Blob([contenido], { type: "text/plain;charset=utf-8" });
+            saveAs(blob, `juegos_seleccionados_${nombreUsuario.toLowerCase().replace(/\s+/g, '_')}.txt`);
         }
 
         async function enviarCSV() {
